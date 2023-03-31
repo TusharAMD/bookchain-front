@@ -1,0 +1,57 @@
+import {useParams} from "react-router-dom";
+import firebase from 'firebase/app';
+import { useEffect } from "react";
+
+import 'firebase/firestore';
+import 'firebase/auth';
+
+import {useCollectionData} from 'react-firebase-hooks/firestore';
+import NavbarComponent from "./Navbar";
+
+if (!firebase.apps.length) {
+    firebase.initializeApp({
+        apiKey: "AIzaSyC2D3Qaz7dG68BypGcKs66Qg9V--YLFrcA",
+        authDomain: "sihproject-c5f47.firebaseapp.com",
+        projectId: "sihproject-c5f47",
+        storageBucket: "sihproject-c5f47.appspot.com",
+        messagingSenderId: "543184709141",
+        appId: "1:543184709141:web:c77c86f96366ff3f3b501c",
+        measurementId: "G-L8WD56JVHV"
+      });
+ }else {
+    firebase.app(); // if already initialized, use that one
+ }
+ 
+ const firestore = firebase.firestore();
+
+function ShopOwner(){
+    let { id } = useParams();
+    
+    const messageref = firestore.collection(`${id}`);
+    const query = messageref.orderBy('createdAt');
+    const [messages] = useCollectionData(query);
+    console.log(messages)
+    useEffect(() => {
+        console.log(messages)
+      }, [messages]);
+    return(
+        <>
+        <NavbarComponent/>
+        {id}
+        
+        <div>
+            {JSON.stringify(messages)}
+            {messages && messages.map(
+                msg=>(
+                    <div className="buyrequest">
+                    {JSON.stringify(msg)}<br/>
+                    </div>
+                )
+            )
+
+            }
+        </div>
+        </>
+    )
+    }
+export default ShopOwner;
